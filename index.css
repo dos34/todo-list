@@ -52,10 +52,18 @@ button {
     margin-bottom: 10px;
 }
 
+.todo-list li.completed label {
+    color: gray;
+}
+
 .todo-list li input[type="checkbox"] {
     margin-right: 10px;
 }
 
 .todo-list li label {
     flex-grow: 1;
+}
+
+.todo-list li.completed label {
+    color: gray;
 }

@@ -3,7 +3,17 @@
 
   if (attributes) {
     Object.keys(attributes).forEach((key) => {
-      element.setAttribute(key, attributes[key]);
+      const value = attributes[key];
+      if (typeof value === "boolean") {
+        element[key] = value;
+        if (value) {
+          element.setAttribute(key, "");
+        } else {
+          element.removeAttribute(key);
+        }
+      } else {
+        element.setAttribute(key, value);
+      }
     });
   }
 
@@ -84,13 +94,40 @@ class TodoList extends Component {
     this.update();
   }
 
+  onToggleTask(index, event) {
+    this.state.todos[index].completed = event.target.checked;
+    this.update();
+  }
+
+  onDeleteTask(index) {
+    this.state.todos.splice(index, 1);
+    this.update();
+  }
+
   render() {
-    const todoItems = this.state.todos.map((todo) =>
-      createElement("li", {}, [
-        createElement("input", { type: "checkbox", checked: todo.completed }),
-        createElement("label", {}, todo.text),
-        createElement("button", {}, "🗑️"),
-      ])
+    const todoItems = this.state.todos.map((todo, index) =>
+      createElement(
+        "li",
+        { class: todo.completed ? "completed" : "" },
+        [
+          createElement("input", {
+            type: "checkbox",
+            checked: todo.completed,
+          }, null, [
+            {
+              event: "change",
+              handler: (event) => this.onToggleTask(index, event),
+            },
+          ]),
+          createElement("label", {}, todo.text),
+          createElement(
+            "button",
+            {},
+            "🗑️",
+            [{ event: "click", handler: () => this.onDeleteTask(index) }]
+          ),
+        ]
+      )
     );
 
     return createElement("div", { class: "todo-list" }, [
